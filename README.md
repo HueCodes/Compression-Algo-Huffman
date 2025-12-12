@@ -2,10 +2,6 @@
 
 A C++ implementation of the Huffman coding algorithm for lossless data compression.
 
-## About Huffman Coding
-
-Huffman coding is a compression algorithm that uses variable-length codes to represent characters based on their frequency. More frequent characters get shorter codes, resulting in efficient compression.
-
 ## Project Structure
 
 ```
