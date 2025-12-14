@@ -1,55 +1,49 @@
 #ifndef HUFFMAN_H
 #define HUFFMAN_H
 
-#include <string>
-#include <unordered_map>
 #include <memory>
+#include <string>
+#include <string_view>
+#include <unordered_map>
 #include <vector>
 
 namespace huffman {
 
-// Node structure for Huffman tree
 struct Node {
     char character;
     int frequency;
-    std::shared_ptr<Node> left;
-    std::shared_ptr<Node> right;
+    std::unique_ptr<Node> left;
+    std::unique_ptr<Node> right;
 
-    Node(char ch, int freq);
-    Node(int freq, std::shared_ptr<Node> l, std::shared_ptr<Node> r);
+    Node(char ch, int freq) noexcept;
+    Node(int freq, std::unique_ptr<Node> l, std::unique_ptr<Node> r) noexcept;
 
-    bool isLeaf() const;
+    [[nodiscard]] constexpr bool isLeaf() const noexcept {
+        return left == nullptr && right == nullptr;
+    }
 };
 
 class HuffmanTree {
 public:
-    HuffmanTree();
+    HuffmanTree() = default;
 
-    // Build the Huffman tree from input text
-    void buildTree(const std::string& text);
+    void buildTree(std::string_view text);
 
-    // Encode the input text
-    std::string encode(const std::string& text);
+    [[nodiscard]] std::string encode(std::string_view text) const;
+    [[nodiscard]] std::string decode(std::string_view encodedText) const;
 
-    // Decode the encoded text
-    std::string decode(const std::string& encodedText);
+    [[nodiscard]] const std::unordered_map<char, int>& getFrequencies() const noexcept;
+    [[nodiscard]] const std::unordered_map<char, std::string>& getCodes() const noexcept;
 
-    // Get the frequency map
-    std::unordered_map<char, int> getFrequencies() const;
-
-    // Get the Huffman codes for each character
-    std::unordered_map<char, std::string> getCodes() const;
+    [[nodiscard]] bool isBuilt() const noexcept { return root_ != nullptr; }
 
 private:
-    std::shared_ptr<Node> root;
-    std::unordered_map<char, int> frequencies;
-    std::unordered_map<char, std::string> huffmanCodes;
+    std::unique_ptr<Node> root_;
+    std::unordered_map<char, int> frequencies_;
+    std::unordered_map<char, std::string> huffmanCodes_;
 
-    // Calculate character frequencies
-    void calculateFrequencies(const std::string& text);
-
-    // Generate Huffman codes
-    void generateCodes(std::shared_ptr<Node> node, const std::string& code);
+    void calculateFrequencies(std::string_view text);
+    void generateCodes(const Node* node, std::string& code);
 };
 
 } // namespace huffman
