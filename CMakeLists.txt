@@ -1,28 +1,45 @@
-cmake_minimum_required(VERSION 3.10)
-project(HuffmanCpp VERSION 1.0.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.14)
+project(HuffmanCpp
+    VERSION 1.0.0
+    LANGUAGES CXX
+    DESCRIPTION "Huffman coding compression algorithm implementation"
+)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+# Export compile commands for IDE/tooling support
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Include directories
-include_directories(${PROJECT_SOURCE_DIR}/include)
+# Compiler-specific warnings (portable approach)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+    add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_compile_options(-g -O0)
+    endif()
+elseif(MSVC)
+    add_compile_options(/W4 /permissive-)
+endif()
 
-# Source files
-set(SOURCES
-    src/main.cpp
+# Create library target for the Huffman implementation
+add_library(huffman_lib STATIC
     src/huffman.cpp
 )
+target_include_directories(huffman_lib
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
 
-# Executable
-add_executable(huffman ${SOURCES})
+# Main executable
+add_executable(huffman src/main.cpp)
+target_link_libraries(huffman PRIVATE huffman_lib)
 
-# Optional: Enable testing
-enable_testing()
-add_subdirectory(tests)
+# Testing
+option(BUILD_TESTING "Build unit tests" ON)
+if(BUILD_TESTING)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
