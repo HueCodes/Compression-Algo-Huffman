@@ -1,6 +1,8 @@
 # Huffman Compression Algorithm - C++ Implementation
 
-A C++ implementation of the Huffman coding algorithm for lossless data compression.
+A C++ implementation of the Huffman coding algorithm for lossless data compression. 
+
+I followed this article for reference: https://www.geeksforgeeks.org/cpp/huffman-coding-in-cpp/
 
 ## Project Structure
 
