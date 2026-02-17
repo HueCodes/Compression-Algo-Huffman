@@ -7,9 +7,16 @@ cmake-build-*/
 *.obj
 *.slo
 *.lo
+*.ko
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
 
 # Compiled Dynamic libraries
 *.so
+*.so.*
 *.dylib
 *.dll
 
@@ -22,7 +29,16 @@ cmake-build-*/
 *.exe
 *.out
 *.app
+*.i*86
+*.x86_64
+*.hex
 huffman
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
 
 # CMake
 CMakeCache.txt
@@ -48,3 +64,8 @@ CTestTestfile.cmake
 *.gcno
 *.gcda
 *.gcov
+coverage/
+
+# Package managers
+conan.lock
+vcpkg_installed/
